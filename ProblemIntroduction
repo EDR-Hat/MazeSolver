@@ -1,0 +1,80 @@
+<i>The following is an edited excerpt of the project assignment given by the professor Dr.Kooshesh</i>
+
+
+A Short Description & Why
+
+For this project, you will write a program that reads a representation of a maze and solves it. 
+
+The goal of this project is to demonstrate that graphs can be used to model seemingly unrelated problems. For example, in the word ladder problem, we used a graph to represent the is-successor-to relation; a word is-successor-to another word if they differ by one (positional) letter. Having done that, to find a ladder between two words, we found a path, in the graph, between the two nodes that represented the two words.
+
+Similar to that, to solve the maze problem, we use a graph to describe is-adjacent-to relationship (see below for the definition of is-adjacent-to.) Once we have such graph, to solve the maze, using the graph, we find a path between the start and the target cells.
+
+In either of the two problems, we do not explicitly generate the graph. Rather, we do so implicitly.
+Different Views of a Maze
+
+You are of course familiar with mazes. Here is one.
+
+One way to solve a maze via a program is to use a graph to represent its paths and use it to find a simple path that connects the vertices that represent the start and target cells. To that end, we will first with identifying its open cells as in the following figure.
+
+Two open cells are adjacent if one is on the left, right, above, and below the other. You can move from one cell to one of its adjacent cells if both cells represent path cells (see below for definitions of path and wall cells.) We will use a graph to represent is-adjacent-to relation as in the following graph.
+
+Let's now only view the adjacency graph. This graph contains all the information that we need to solve the maze. 
+
+Using the above graph, we can more easily find the path that connects the start and the target nodes. In the following graph, the path has been highlighted.
+
+For this project, you will not create an explicit graph to solve the input maze. Rather, you will use the adjacency information of the input maze to traverse its graph implicitly. More on this later.
+A Few Definitions
+
+    A cell is a tuple that consists of a row and a column. 
+    A cell is either a wall cell or a path cell. 
+    A maze is surrounded by wall cells except for two cells. These two cells are called the start and the target cells.
+    Two cells are adjacent if one is immediately above, immediately below, to the right, or to the left of the other. You can only connect adjacent cells that are open cells (path cells.) Solving a maze is finding a path that connects the start cell to the target cell by only using adjacent open cells.
+    The following demonstrates the notion of adjacency for a few selected cells. In this graph, we have used black dots to represent the walls. Note that the relation is-adjacent-to is symmetric. However, in the following graph, we only show is-adjacent-to from the viewpoint of a given cell. That is, if you were to be positioned in that cell, the arrows show the adjacent cells that you can move into.
+
+Concept of adjacent cells in a maze
+
+A Backtracking Algorithm
+
+Just as in the word ladder, you would use a backtracking algorithm to find a path between the start and the target cells. The process starts at a particular point (the start cell in the maze problem and the start word in the ladder problem) and requires moving from one state to the next, by applying a particular rule, until either we end up at the target state (the target maze cell or the target word), in which case the algorithm stops, or reaching a dead end, in which case we backtrack. That is, we take one or more steps backward until we get to a point where we can move forward in a different direction.
+
+For example, in the maze below, we started at the cell that is represented by the filled red-circle with the intension of reaching the other red-filled circle. We took three steps (one at a time) and reached a dead end. We will have to backtrack twice (one at a time) until we get back to the blue-filled cell, where we had more than one choice, and select a different neighbor than we did before. In the following case, we take the open cell above the blue cell once we backtrack to it. 
+
+When we choose an adjacent cell to move into, there is no guarantee that the selected cell will lead to a path that solves the maze. That was also the case when we selected a successor for a word in the ladder problem.
+
+Rather, it means that, we have no advanced knowledge of which choice would lead to a solution.  As a result, we try one and if it doesn't work, we try another one.  Therefore, when we are at a cell that has multiple adjacent cells, we randomly select one and move into it. If that did not lead to a solution, we will backtrack to this cell and chose another adjacent cell to explore.
+
+Here is a backtracking algorithm that works for problems of this nature.
+
+push the start cell (start word in the ladder problem) onto the stack
+while the stack is not empty do
+     if there is no successor (adjacent cell) for the top element of the stack {
+          pop the stack
+     } else {
+          let s be a cell (a word) that is adjacent to the 
+                one that is on top of the stack and has not been explored yet
+          push s onto the stack
+          mark s as used (explored)
+          if s is the target, exit this loop
+     }
+end-while
+if the stack is empty, there is no path from the start cell to the target cell
+otherwise, the stack contains the path, in the reverse order
+
+Zeros And Ones
+
+Here is how we convert the above maze to a from that can more easily be read by a program. We will start with the following version of the maze where the open cells and the walls have been represented by red and black circles, respectively.
+
+
+Now, we will use zeros to represent the open cells and ones to represent walls.
+
+Input/output
+
+Your program should accept an argument, the name of the input file . The file will contain the description of the maze in the form that we just discussed, a number of rows each of which contains a sequence of zeros and ones. There will be no spaces between the digits. Here is a sample input file.
+
+Download Here is a sample input file.
+
+The input maze is surrounded by ones (walls) except for the start and the target cells, which are zeros. You will have to find them after you read the input. 
+
+The output of your program is exactly like its input, except you would print a blank character in place zeros of the cells on the path. If there is no path between these two cells, you should write a message indicating so.
+
+Here is the output that corresponds to the above input. Again, no spaces between the digits, only where there is a path cell.
